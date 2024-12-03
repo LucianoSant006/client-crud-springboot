@@ -1,14 +1,12 @@
 package Client.Api_Restfull_Client.entities;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name = "TB_Name")
+@Table(name = "Tb_Client")
 public class Client {
 
     @Id
