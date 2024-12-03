@@ -1,0 +1,26 @@
+{
+	"info": {
+		"_postman_id": "4f7bf9ba-dd47-4d71-bb3b-f7db87bbbcde",
+		"name": "Api-Client",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36527302"
+	},
+	"item": [
+		{
+			"name": "requst-pageable",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "findByID",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

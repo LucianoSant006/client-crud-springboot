@@ -2,9 +2,11 @@ package Client.Api_Restfull_Client.service;
 
 import Client.Api_Restfull_Client.dto.ClientDTO;
 import Client.Api_Restfull_Client.repository.ClientRepository;
-import Client.Api_Restfull_Client.service.mapper.Genericmapper;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +25,11 @@ public class ClientService {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Client not found with ID: " + id));
         return modelMapper.map(client, ClientDTO.class);
-
-
+    }
+    @Transactional(readOnly = true)
+    public Page<ClientDTO> serachPage(Pageable pageable){
+        Page<Client> page = clientRepository.findAll(pageable);
+        return page.map(x -> modelMapper.map(x,ClientDTO.class));
     }
 
 
