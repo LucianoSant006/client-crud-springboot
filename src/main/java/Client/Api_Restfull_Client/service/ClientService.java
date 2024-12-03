@@ -32,6 +32,14 @@ public class ClientService {
         return page.map(x -> modelMapper.map(x,ClientDTO.class));
     }
 
+    @Transactional
+    public ClientDTO insert(ClientDTO clientDTO){
+        Client client = modelMapper.map(clientDTO,Client.class);
+        client = clientRepository.save(client);
+        return modelMapper.map(client,ClientDTO.class);
+    }
+
+
 
 
 }
