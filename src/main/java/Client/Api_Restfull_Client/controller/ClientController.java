@@ -1,6 +1,7 @@
 package Client.Api_Restfull_Client.controller;
 
 import Client.Api_Restfull_Client.dto.ClientDTO;
+import Client.Api_Restfull_Client.entities.Client;
 import Client.Api_Restfull_Client.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,18 @@ public class ClientController {
         URI uri =  ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ClientDTO> update(@PathVariable Long id,@Valid @RequestBody ClientDTO dto){
+        ClientDTO clientDTO = clientService.update(id,dto);
+        return ResponseEntity.ok(dto);
+    }
+
+    @DeleteMapping(value = "{id}")
+    ResponseEntity<Void> delete(@PathVariable Long id){
+        clientService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

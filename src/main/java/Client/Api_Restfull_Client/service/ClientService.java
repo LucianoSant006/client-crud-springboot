@@ -5,8 +5,10 @@ import Client.Api_Restfull_Client.repository.ClientRepository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,25 +23,44 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     @Transactional(readOnly = true)
-    public ClientDTO findById(Long id){
+    public ClientDTO findById(Long id) {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Client not found with ID: " + id));
         return modelMapper.map(client, ClientDTO.class);
     }
+
     @Transactional(readOnly = true)
-    public Page<ClientDTO> serachPage(Pageable pageable){
+    public Page<ClientDTO> serachPage(Pageable pageable) {
         Page<Client> page = clientRepository.findAll(pageable);
-        return page.map(x -> modelMapper.map(x,ClientDTO.class));
+        return page.map(x -> modelMapper.map(x, ClientDTO.class));
     }
 
     @Transactional
-    public ClientDTO insert(ClientDTO clientDTO){
-        Client client = modelMapper.map(clientDTO,Client.class);
+    public ClientDTO insert(ClientDTO clientDTO) {
+        Client client = modelMapper.map(clientDTO, Client.class);
         client = clientRepository.save(client);
-        return modelMapper.map(client,ClientDTO.class);
+        return modelMapper.map(client, ClientDTO.class);
     }
 
+    @Transactional
+    public ClientDTO update(Long id, ClientDTO dto) {
+        Client client = clientRepository.findById(id).orElseThrow(() -> new RuntimeException("Client not found " + id));
+        modelMapper.map(dto, client);
+        Client clientUpdate = clientRepository.save(client);
+        return modelMapper.map(clientUpdate, ClientDTO.class);
 
+    }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(Long id) {
+        if (!clientRepository.existsById(id)) {
+            throw new RuntimeException("Recurso não encontrado");
+        }
+        try {
+            clientRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Falha de integridade referencial");
 
+        }
+    }
 }
