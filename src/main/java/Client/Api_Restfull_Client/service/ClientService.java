@@ -3,6 +3,7 @@ package Client.Api_Restfull_Client.service;
 import Client.Api_Restfull_Client.dto.ClientDTO;
 import Client.Api_Restfull_Client.repository.ClientRepository;
 
+import Client.Api_Restfull_Client.service.exceptions.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,7 +26,7 @@ public class ClientService {
     @Transactional(readOnly = true)
     public ClientDTO findById(Long id) {
         Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found with ID: " + id));
         return modelMapper.map(client, ClientDTO.class);
     }
 
@@ -44,7 +45,7 @@ public class ClientService {
 
     @Transactional
     public ClientDTO update(Long id, ClientDTO dto) {
-        Client client = clientRepository.findById(id).orElseThrow(() -> new RuntimeException("Client not found " + id));
+        Client client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Client not found with ID: " + id));
         modelMapper.map(dto, client);
         Client clientUpdate = clientRepository.save(client);
         return modelMapper.map(clientUpdate, ClientDTO.class);
@@ -54,7 +55,7 @@ public class ClientService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         if (!clientRepository.existsById(id)) {
-            throw new RuntimeException("Recurso não encontrado");
+            throw new ResourceNotFoundException("Resource not found");
         }
         try {
             clientRepository.deleteById(id);
