@@ -3,6 +3,7 @@ package Client.Api_Restfull_Client.service;
 import Client.Api_Restfull_Client.dto.ClientDTO;
 import Client.Api_Restfull_Client.repository.ClientRepository;
 
+import Client.Api_Restfull_Client.service.exceptions.DatabaseException;
 import Client.Api_Restfull_Client.service.exceptions.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
@@ -60,7 +61,7 @@ public class ClientService {
         try {
             clientRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
-            throw new RuntimeException("Falha de integridade referencial");
+            throw new DatabaseException("Referential integrity failure");
 
         }
     }

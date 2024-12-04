@@ -1,6 +1,7 @@
 package Client.Api_Restfull_Client.controller.handlers;
 
 import Client.Api_Restfull_Client.dto.CustomErrorDTO;
+import Client.Api_Restfull_Client.service.exceptions.DatabaseException;
 import Client.Api_Restfull_Client.service.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,12 @@ public class ControllerException {
         CustomErrorDTO error = new CustomErrorDTO(Instant.now(),status.value(),e.getMessage(),request.getRequestURI());
         return ResponseEntity.status(status).body(error);
     }
-    
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<CustomErrorDTO> databaseViolation(DatabaseException e,HttpServletRequest request){
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        CustomErrorDTO error = new CustomErrorDTO(Instant.now(),status.value(),e.getMessage(),request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+
 
 }
